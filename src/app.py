@@ -11,6 +11,7 @@ import visual
 
 # Inicializar la aplicación de Dash
 app = dash.Dash(__name__)
+server = app.server
 
 # Paso 1: Cargar y transformar los datos
 data = etl.get_user_top_tracks()
