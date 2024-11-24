@@ -7,10 +7,14 @@ import dash_bootstrap_components as dbc
 from nltk.corpus import stopwords
 from rake_nltk import Rake
 from figures import create_keywords_figure  # Importar la función
+from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import StandardScaler
+import numpy as np
 
 # Cargar el dataset
 df = pd.read_csv('../tracks.csv')  # Ajusta la ruta según sea necesario
 
+# Función para extraer palabras clave
 def extract_keywords_from_lyrics(lyrics):
     if pd.isna(lyrics) or len(lyrics.strip()) == 0:  # Verificar si la letra está vacía o es NaN
         return []  # Devolver una lista vacía si no hay letra
@@ -28,6 +32,34 @@ def extract_keywords_from_lyrics(lyrics):
     # Retornar las 10 palabras más comunes
     return word_counts.most_common(10)
 
+# Preprocesar todas las canciones para KNN
+def prepare_knn_data(df):
+    # Extraer palabras clave y convertirlas en vectores
+    rake = Rake()
+    song_vectors = []
+    for _, row in df.iterrows():
+        if row['letra']:
+            rake.extract_keywords_from_text(row['letra'])
+            keywords = rake.get_ranked_phrases_with_scores()
+            vector = [score for score, _ in keywords[:10]]  # Tomar los 10 mejores puntajes
+        else:
+            vector = [0] * 10  # Si no hay letra, asignar un vector de ceros
+        song_vectors.append(vector)
+    
+    # Convertir en DataFrame para KNN
+    knn_data = np.array(song_vectors)
+    
+    # Normalizar las características
+    scaler = StandardScaler()
+    knn_data_normalized = scaler.fit_transform(knn_data)
+    
+    return knn_data_normalized
+
+# Entrenar el modelo KNN
+knn_data = prepare_knn_data(df)
+knn_model = NearestNeighbors(n_neighbors=20, metric='cosine')
+knn_model.fit(knn_data)
+
 def update_playlist(n_clicks, edad, mood, energia, localizacion):
     if n_clicks == 0:
         return ""
@@ -40,14 +72,35 @@ def update_playlist(n_clicks, edad, mood, energia, localizacion):
     genre = mood_map.get(mood, 'pop')
     genre = localizacion_map.get(localizacion, genre)
 
+    # Filtrar canciones por energía
     filtered_df = filtered_df[(filtered_df['energia'] >= energia - 0.3) & 
                                (filtered_df['energia'] <= energia + 0.3)]
 
     if filtered_df.empty:
         return "No hay canciones que coincidan con los filtros aplicados. Intenta con otros valores."
 
-    playlist = filtered_df.sample(20) if len(filtered_df) >= 20 else filtered_df
-    return playlist_cards(playlist)
+    # Preprocesar y normalizar las características de las canciones filtradas
+    song_vectors = []
+    for _, row in filtered_df.iterrows():
+        if row['letra']:
+            rake = Rake()
+            rake.extract_keywords_from_text(row['letra'])
+            keywords = rake.get_ranked_phrases_with_scores()
+            vector = [score for score, _ in keywords[:10]]  # Tomar los 10 mejores puntajes
+        else:
+            vector = [0] * 10  # Si no hay letra, asignar un vector de ceros
+        song_vectors.append(vector)
+
+    song_vectors = np.array(song_vectors)
+    song_vectors_normalized = StandardScaler().fit_transform(song_vectors)
+    
+    # Realizar la predicción con KNN
+    distances, indices = knn_model.kneighbors(song_vectors_normalized)
+
+    # Crear la lista de canciones recomendadas
+    recommended_songs = filtered_df.iloc[indices.flatten()]
+
+    return playlist_cards(recommended_songs)
 
 def playlist_cards(playlist):
     playlist_cards = []
