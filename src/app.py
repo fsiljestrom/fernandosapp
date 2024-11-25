@@ -1,7 +1,6 @@
 from dash import Dash
 import dash_bootstrap_components as dbc
 from layout import create_layout
-from dash import dcc, html, Input, Output, State
 from callbacks import register_callbacks
 
 # Inicializar la aplicación Dash

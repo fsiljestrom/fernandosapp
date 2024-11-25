@@ -1,7 +1,8 @@
-from dash import dcc, html, Input, Output, State
-import dash_bootstrap_components as dbc
+from dash import Input, Output, State
 from model import df, extract_keywords_from_lyrics
 from figures import create_keyword_bar_chart
+from dash import dcc, html, Input, Output, State
+import dash_bootstrap_components as dbc
 
 def register_callbacks(app):
     @app.callback(
