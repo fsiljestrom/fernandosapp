@@ -1,25 +1,18 @@
-import dash
-from dash import dcc, html, Input, Output, State
+from dash import Dash
 import dash_bootstrap_components as dbc
-from layout import app_layout
-from model import update_playlist
+from layout import create_layout
+from dash import dcc, html, Input, Output, State
+from callbacks import register_callbacks
 
 # Inicializar la aplicación Dash
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Generador de Playlist"
 
-# Definir el layout
-app.layout = app_layout
+# Configurar el diseño
+app.layout = create_layout(app)
 
-# Configurar callback
-app.callback(
-    Output('playlist-output', 'children'),
-    [Input('generar-btn', 'n_clicks')],
-    [State('edad', 'value'),
-     State('mood', 'value'),
-     State('energia-input', 'value'),
-     State('localizacion', 'value')]
-)(update_playlist)
+# Registrar callbacks
+register_callbacks(app)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
