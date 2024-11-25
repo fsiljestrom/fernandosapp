@@ -6,6 +6,7 @@ from callbacks import register_callbacks
 # Inicializar la aplicación Dash
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Generador de Playlist"
+server = app.server
 
 # Configurar el diseño
 app.layout = create_layout(app)
