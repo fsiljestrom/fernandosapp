@@ -28,7 +28,7 @@ def register_callbacks(app):
         if filtered_df.empty:
             return "No hay canciones que coincidan con los filtros aplicados. Intenta con otros valores."
 
-        playlist = filtered_df.sample(5) if len(filtered_df) >= 5 else filtered_df
+        playlist = filtered_df.sample(10) if len(filtered_df) >= 10 else filtered_df
 
         playlist_cards = []
         for _, row in playlist.iterrows():
