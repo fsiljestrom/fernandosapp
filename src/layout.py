@@ -39,9 +39,8 @@ def create_layout(app):
                     dbc.Row([ 
                         dbc.Col(html.Label("Edad:", style={'color': 'white', 'fontSize': '18px'}), width=2),
                         dbc.Col(dcc.Input(id='edad', type='number', placeholder="Introduce tu edad",
-                                          style={'width': '100%', 'padding': '10px', 'borderRadius': '8px'}), width=10)
-                    ], style={'marginTop': '30px'}),
-
+                                          style={'width': '99%', 'padding': '10px', 'borderRadius': '8px'}), width=10)
+                    ], style={'marginTop': '30px', 'marginLeft':'0.5px'}),
                     dbc.Row([ 
                         dbc.Col(html.Label("Mood:", style={'color': 'white', 'fontSize': '18px'}), width=2),
                         dbc.Col(dcc.Dropdown(id='mood', options=[

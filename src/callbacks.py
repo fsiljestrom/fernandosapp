@@ -33,7 +33,7 @@ def register_callbacks(app):
         playlist_cards = []
         for _, row in playlist.iterrows():
             keywords = extract_keywords_from_lyrics(row.get('letra', ''))
-            fig = create_keyword_bar_chart(keywords, row['nombre'])
+            fig = create_keyword_bar_chart(keywords, row['nombre'], row.get('letra', ''))
             playlist_cards.append(
                 dbc.Card(
                     dbc.CardBody([

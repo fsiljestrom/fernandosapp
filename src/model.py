@@ -13,7 +13,8 @@ def preprocess_lyrics(lyrics):
         return []
     cleaned_text = re.sub(r'[^\w\s]', '', lyrics.lower())
     tokens = cleaned_text.split()
-    return [word for word in tokens if word not in stopwords.words('spanish')]
+    combined_stopwords = set(stopwords.words('spanish')).union(set(stopwords.words('english')))
+    return [word for word in tokens if word not in combined_stopwords]
 
 def extract_keywords_from_lyrics(lyrics):
     tokens = preprocess_lyrics(lyrics)
