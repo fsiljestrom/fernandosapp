@@ -92,7 +92,10 @@ def create_layout(app):
                     ], style={'textAlign': 'center'}),
 
                     # Contenedor para mostrar la playlist generada
-                    html.Div(id='playlist-output', style={'marginTop': '50px'})
+                    html.Div(id='playlist-output', style={'marginTop': '50px'}),
+                    # Contenedor para mostras los demás gráficos
+                    html.Div(id='visualizations-output', style={'marginTop': '50px'})
+
                 ],
                 fluid=True,
                 style={'padding': '50px', 'backgroundColor': '#121212', 'borderRadius': '15px'}
