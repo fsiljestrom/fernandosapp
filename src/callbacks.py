@@ -1,7 +1,7 @@
 from dash import Input, Output, State
 from model import df, extract_keywords_from_lyrics
 from figures import (create_keyword_bar_chart, create_genre_pie_chart, 
-                     create_wordcloud, create_stacked_bar_chart, create_timeline)
+                     create_wordcloud, create_timeline)
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
@@ -59,14 +59,12 @@ def register_callbacks(app):
         # Generar visualizaciones adicionales
         pie_chart = create_genre_pie_chart(genres)
         wordcloud_fig = create_wordcloud(all_keywords)
-        stacked_bar = create_stacked_bar_chart(playlist, all_keywords)
         timeline = create_timeline(playlist)
 
         visualizations = html.Div([
             html.H4("Visualizaciones Adicionales", style={'color': '#1DB954'}),
             dcc.Graph(figure=pie_chart),
             dcc.Graph(figure=wordcloud_fig),
-            dcc.Graph(figure=stacked_bar),
             dcc.Graph(figure=timeline)
         ])
 

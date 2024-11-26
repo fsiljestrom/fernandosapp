@@ -74,17 +74,19 @@ def create_wordcloud(keywords):
         width=800, height=400, background_color='black', colormap='Greens'
     ).generate(' '.join(keywords))
     
+    # Crear imagen con matplotlib
     fig = plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
 
-    # Convertir a base64
+    # Convertir imagen a base64
     buf = io.BytesIO()
-    plt.savefig(buf, format="png")
+    plt.savefig(buf, format="png", bbox_inches='tight')
     buf.seek(0)
     encoded_image = base64.b64encode(buf.read()).decode('utf-8')
     buf.close()
 
+    # Crear figura en Plotly sin cuadrícula
     fig = go.Figure()
     fig.add_layout_image(
         dict(
@@ -95,20 +97,15 @@ def create_wordcloud(keywords):
             layer="below"
         )
     )
-    fig.update_layout(template="plotly_dark", title="Nube de Palabras Clave")
-    return fig
-
-# 3. Barras apiladas: palabras clave vs género
-def create_stacked_bar_chart(playlist, all_keywords):
-    keywords = {kw: all_keywords.count(kw) for kw in set(all_keywords)}
-    fig = px.bar(
-        x=list(keywords.keys()),
-        y=list(keywords.values()),
-        labels={"x": "Palabra Clave", "y": "Frecuencia"},
-        title="Frecuencia de Palabras Clave por Género",
-        color_discrete_sequence=["#1DB954"]
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
+    fig.update_layout(
+        template="plotly_dark",
+        title="Nube de Palabras Clave",
+        title_x=0.5,
+        title_font=dict(size=20, color="#1DB954"),
+        margin=dict(l=0, r=0, t=40, b=0),
     )
-    fig.update_layout(template="plotly_dark", xaxis=dict(tickangle=-45))
     return fig
 
 # 4. Línea de tiempo de canciones
