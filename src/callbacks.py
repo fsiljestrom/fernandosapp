@@ -3,7 +3,9 @@ from model import df, extract_keywords_from_lyrics
 from figures import (create_keyword_bar_chart, create_genre_pie_chart, 
                      create_wordcloud, create_timeline)
 from dash import dcc, html
+from model import create_spotify_playlist
 import dash_bootstrap_components as dbc
+
 
 def register_callbacks(app):
     @app.callback(
@@ -34,7 +36,10 @@ def register_callbacks(app):
             return "No hay canciones que coincidan con los filtros aplicados. Intenta con otros valores.", ""
 
         playlist = filtered_df.sample(10) if len(filtered_df) >= 10 else filtered_df
-
+        count = 0
+        if count == 0:
+            create_spotify_playlist(playlist)
+        count+=1
         playlist_cards = []
         genres = []
         all_keywords = []
@@ -69,3 +74,4 @@ def register_callbacks(app):
         ])
 
         return playlist_cards, visualizations
+    
