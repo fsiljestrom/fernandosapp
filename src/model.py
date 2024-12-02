@@ -29,7 +29,7 @@ def preprocess_lyrics(lyrics):
 def create_spotify_playlist(playlist):
     # Crear una nueva playlist en la cuenta autenticada
     user_id = sp.current_user()["id"]
-    playlist_name = "La Playlist de David"
+    playlist_name = "Mi Playlist Generada"
     playlist_description = "Playlist generada automáticamente por la webapp."
     
     # Crear la playlist
